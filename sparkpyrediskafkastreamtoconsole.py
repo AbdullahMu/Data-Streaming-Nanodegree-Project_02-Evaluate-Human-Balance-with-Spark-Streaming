@@ -132,7 +132,7 @@ sql_statement = """
                     FROM CustomerRecords 
                     WHERE email IS NOT NULL 
                         AND birthDay IS NOT NULL
-                    """
+                """
 emailAndBirthDayStreamingDF = spark.sql(sql_statement)
 
 # from the emailAndBirthDayStreamingDF dataframe select the email and the birth year (using the split function)
