@@ -1,0 +1,29 @@
+-------------------------------------------
+Batch: 0
+-------------------------------------------
++--------------------+---------+
+|               email|birthYear|
++--------------------+---------+
+| John.Ahmed@test.com|     1965|
+|Jerry.Harris@test...|     1963|
+| Sean.Clark@test.com|     1962|
+|Senthil.Sanchez@t...|     1961|
+|Craig.Habschied@t...|     1960|
+|Bobby.Clark@test.com|     1959|
+|Senthil.Spencer@t...|     1958|
+|Frank.Doshi@test.com|     1957|
+|Ashley.Abram@test...|     1956|
+|Suresh.Ahmed@test...|     1955|
+|Trevor.Clark@test...|     1954|
+| Sean.Doshi@test.com|     1953|
+|   Craig.Wu@test.com|     1952|
+|Craig.Phillips@te...|     1951|
+|Suresh.Clark@test...|     1950|
+|Danny.Sanchez@tes...|     1949|
+|John.Hansen@test.com|     1947|
+|Ashley.Doshi@test...|     1946|
+|Trevor.Harris@tes...|     1945|
+|Santosh.Anandh@te...|     1944|
++--------------------+---------+
+only showing top 20 rows
+

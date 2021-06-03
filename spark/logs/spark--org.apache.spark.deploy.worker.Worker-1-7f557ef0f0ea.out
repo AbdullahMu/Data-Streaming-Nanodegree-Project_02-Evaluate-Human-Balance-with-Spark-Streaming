@@ -1,0 +1,35 @@
+Spark Command: /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -cp /opt/spark-2.3.4-bin-hadoop2.7/conf/:/opt/spark-2.3.4-bin-hadoop2.7/jars/* -Xmx1g org.apache.spark.deploy.worker.Worker --webui-port 8081 spark://7f557ef0f0ea:7077
+========================================
+2021-06-03 11:04:36 INFO  Worker:2612 - Started daemon with process name: 1668@7f557ef0f0ea
+2021-06-03 11:04:36 INFO  SignalUtils:54 - Registered signal handler for TERM
+2021-06-03 11:04:36 INFO  SignalUtils:54 - Registered signal handler for HUP
+2021-06-03 11:04:36 INFO  SignalUtils:54 - Registered signal handler for INT
+2021-06-03 11:04:38 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2021-06-03 11:04:38 INFO  SecurityManager:54 - Changing view acls to: root
+2021-06-03 11:04:38 INFO  SecurityManager:54 - Changing modify acls to: root
+2021-06-03 11:04:38 INFO  SecurityManager:54 - Changing view acls groups to: 
+2021-06-03 11:04:38 INFO  SecurityManager:54 - Changing modify acls groups to: 
+2021-06-03 11:04:38 INFO  SecurityManager:54 - SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+2021-06-03 11:04:39 INFO  Utils:54 - Successfully started service 'sparkWorker' on port 41459.
+2021-06-03 11:04:40 INFO  Worker:54 - Starting Spark worker 172.18.0.2:41459 with 2 cores, 6.3 GB RAM
+2021-06-03 11:04:40 INFO  Worker:54 - Running Spark version 2.3.4
+2021-06-03 11:04:40 INFO  Worker:54 - Spark home: /opt/spark-2.3.4-bin-hadoop2.7
+2021-06-03 11:04:41 INFO  log:192 - Logging initialized @6528ms
+2021-06-03 11:04:41 INFO  Server:351 - jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown
+2021-06-03 11:04:41 INFO  Server:419 - Started @6825ms
+2021-06-03 11:04:41 WARN  Utils:66 - Service 'WorkerUI' could not bind on port 8081. Attempting port 8082.
+2021-06-03 11:04:41 WARN  Utils:66 - Service 'WorkerUI' could not bind on port 8082. Attempting port 8083.
+2021-06-03 11:04:41 WARN  Utils:66 - Service 'WorkerUI' could not bind on port 8083. Attempting port 8084.
+2021-06-03 11:04:41 INFO  AbstractConnector:278 - Started ServerConnector@160b0141{HTTP/1.1,[http/1.1]}{0.0.0.0:8084}
+2021-06-03 11:04:41 INFO  Utils:54 - Successfully started service 'WorkerUI' on port 8084.
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@28a01552{/logPage,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@11fe2fb8{/logPage/json,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@4f0b64e7{/,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@3f892ef1{/json,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@5fea5557{/static,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@644950ee{/log,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  WorkerWebUI:54 - Bound WorkerWebUI to 0.0.0.0, and started at http://7f557ef0f0ea:8084
+2021-06-03 11:04:41 INFO  Worker:54 - Connecting to master 7f557ef0f0ea:7077...
+2021-06-03 11:04:41 INFO  ContextHandler:781 - Started o.s.j.s.ServletContextHandler@12883287{/metrics/json,null,AVAILABLE,@Spark}
+2021-06-03 11:04:41 INFO  TransportClientFactory:267 - Successfully created connection to 7f557ef0f0ea/172.18.0.2:7077 after 159 ms (0 ms spent in bootstraps)
+2021-06-03 11:04:42 INFO  Worker:54 - Successfully registered with master spark://7f557ef0f0ea:7077

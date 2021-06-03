@@ -1,0 +1,195 @@
+Traceback (most recent call last):
+  File "/data/spark/python/lib/pyspark.zip/pyspark/sql/utils.py", line 63, in deco
+  File "/data/spark/python/lib/py4j-0.10.7-src.zip/py4j/protocol.py", line 328, in get_return_value
+py4j.protocol.Py4JJavaError: An error occurred while calling o107.awaitTermination.
+: org.apache.spark.sql.streaming.StreamingQueryException: Writing job aborted.
+=== Streaming Query ===
+Identifier: [id = 72a9d1e7-078a-475d-8fe5-4f1177bf949c, runId = 19e51251-fe81-44f9-ba3e-0dff13acbd83]
+Current Committed Offsets: {KafkaV2[Subscribe[redis-server]]: {"redis-server":{"0":17}},KafkaV2[Subscribe[stedi-events]]: {"stedi-events":{"0":169}}}
+Current Available Offsets: {KafkaV2[Subscribe[redis-server]]: {"redis-server":{"0":17}},KafkaV2[Subscribe[stedi-events]]: {"stedi-events":{"0":194}}}
+
+Current State: ACTIVE
+Thread State: RUNNABLE
+
+Logical Plan:
+Project [structstojson(named_struct(customer, customer#86, score, score#87, email, email#42, birthYear, birthYear#53), Some(Etc/UTC)) AS value#106]
++- Join Inner, (customer#86 = email#42)
+   :- Project [customer#86, score#87]
+   :  +- SubqueryAlias `customerrisk`
+   :     +- Project [value#84.customer AS customer#86, value#84.score AS score#87, value#84.riskDate AS riskDate#88]
+   :        +- Project [jsontostructs(StructField(customer,StringType,true), StructField(score,FloatType,true), StructField(riskDate,DateType,true), value#82, Some(Etc/UTC)) AS value#84]
+   :           +- Project [cast(value#69 as string) AS value#82]
+   :              +- StreamingExecutionRelation KafkaV2[Subscribe[stedi-events]], [key#68, value#69, topic#70, partition#71, offset#72L, timestamp#73, timestampType#74]
+   +- Project [email#42, birthYear#53]
+      +- Project [customerName#41, email#42, phone#43, birthDay#44, split(birthDay#44, -)[0] AS birthYear#53]
+         +- Project [customerName#41, email#42, phone#43, birthDay#44]
+            +- Filter (isnotnull(email#42) && isnotnull(birthDay#44))
+               +- SubqueryAlias `customerrecords`
+                  +- Project [customer#38.customerName AS customerName#41, customer#38.email AS email#42, customer#38.phone AS phone#43, customer#38.birthDay AS birthDay#44]
+                     +- Project [encodedCustomer#33, jsontostructs(StructField(customerName,StringType,true), StructField(email,StringType,true), StructField(phone,StringType,true), StructField(birthDay,StringType,true), customer#35, Some(Etc/UTC)) AS customer#38]
+                        +- Project [encodedCustomer#33, cast(unbase64(encodedCustomer#33) as string) AS customer#35]
+                           +- Project [zSetEntries#28[0].element AS encodedCustomer#33]
+                              +- SubqueryAlias `redissortedset`
+                                 +- Project [value#23.existType AS existType#25, value#23.Ch AS Ch#26, value#23.Incr AS Incr#27, value#23.zSetEntries AS zSetEntries#28]
+                                    +- Project [jsontostructs(StructField(key,StringType,true), StructField(existType,StringType,true), StructField(Ch,BooleanType,true), StructField(Incr,BooleanType,true), StructField(zSetEntries,ArrayType(StructType(StructField(element,StringType,true), StructField(Score,StringType,true)),true),true), value#21, Some(Etc/UTC)) AS value#23]
+                                       +- Project [cast(value#8 as string) AS value#21]
+                                          +- StreamingExecutionRelation KafkaV2[Subscribe[redis-server]], [key#7, value#8, topic#9, partition#10, offset#11L, timestamp#12, timestampType#13]
+
+	at org.apache.spark.sql.execution.streaming.StreamExecution.org$apache$spark$sql$execution$streaming$StreamExecution$$runStream(StreamExecution.scala:297)
+	at org.apache.spark.sql.execution.streaming.StreamExecution$$anon$1.run(StreamExecution.scala:193)
+Caused by: org.apache.spark.SparkException: Writing job aborted.
+	at org.apache.spark.sql.execution.datasources.v2.WriteToDataSourceV2Exec.doExecute(WriteToDataSourceV2Exec.scala:92)
+	at org.apache.spark.sql.execution.SparkPlan$$anonfun$execute$1.apply(SparkPlan.scala:131)
+	at org.apache.spark.sql.execution.SparkPlan$$anonfun$execute$1.apply(SparkPlan.scala:127)
+	at org.apache.spark.sql.execution.SparkPlan$$anonfun$executeQuery$1.apply(SparkPlan.scala:155)
+	at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)
+	at org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:152)
+	at org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:127)
+	at org.apache.spark.sql.execution.SparkPlan.getByteArrayRdd(SparkPlan.scala:247)
+	at org.apache.spark.sql.execution.SparkPlan.executeCollect(SparkPlan.scala:296)
+	at org.apache.spark.sql.Dataset.org$apache$spark$sql$Dataset$$collectFromPlan(Dataset.scala:3389)
+	at org.apache.spark.sql.Dataset$$anonfun$collect$1.apply(Dataset.scala:2788)
+	at org.apache.spark.sql.Dataset$$anonfun$collect$1.apply(Dataset.scala:2788)
+	at org.apache.spark.sql.Dataset$$anonfun$52.apply(Dataset.scala:3370)
+	at org.apache.spark.sql.execution.SQLExecution$$anonfun$withNewExecutionId$1.apply(SQLExecution.scala:80)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:127)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:75)
+	at org.apache.spark.sql.Dataset.withAction(Dataset.scala:3369)
+	at org.apache.spark.sql.Dataset.collect(Dataset.scala:2788)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$org$apache$spark$sql$execution$streaming$MicroBatchExecution$$runBatch$5$$anonfun$apply$17.apply(MicroBatchExecution.scala:540)
+	at org.apache.spark.sql.execution.SQLExecution$$anonfun$withNewExecutionId$1.apply(SQLExecution.scala:80)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:127)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:75)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$org$apache$spark$sql$execution$streaming$MicroBatchExecution$$runBatch$5.apply(MicroBatchExecution.scala:535)
+	at org.apache.spark.sql.execution.streaming.ProgressReporter$class.reportTimeTaken(ProgressReporter.scala:351)
+	at org.apache.spark.sql.execution.streaming.StreamExecution.reportTimeTaken(StreamExecution.scala:58)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution.org$apache$spark$sql$execution$streaming$MicroBatchExecution$$runBatch(MicroBatchExecution.scala:534)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$runActivatedStream$1$$anonfun$apply$mcZ$sp$1.apply$mcV$sp(MicroBatchExecution.scala:198)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$runActivatedStream$1$$anonfun$apply$mcZ$sp$1.apply(MicroBatchExecution.scala:166)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$runActivatedStream$1$$anonfun$apply$mcZ$sp$1.apply(MicroBatchExecution.scala:166)
+	at org.apache.spark.sql.execution.streaming.ProgressReporter$class.reportTimeTaken(ProgressReporter.scala:351)
+	at org.apache.spark.sql.execution.streaming.StreamExecution.reportTimeTaken(StreamExecution.scala:58)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution$$anonfun$runActivatedStream$1.apply$mcZ$sp(MicroBatchExecution.scala:166)
+	at org.apache.spark.sql.execution.streaming.ProcessingTimeExecutor.execute(TriggerExecutor.scala:56)
+	at org.apache.spark.sql.execution.streaming.MicroBatchExecution.runActivatedStream(MicroBatchExecution.scala:160)
+	at org.apache.spark.sql.execution.streaming.StreamExecution.org$apache$spark$sql$execution$streaming$StreamExecution$$runStream(StreamExecution.scala:281)
+	... 1 more
+Caused by: org.apache.spark.SparkException: Job aborted due to stage failure: Task 0 in stage 3.0 failed 1 times, most recent failure: Lost task 0.0 in stage 3.0 (TID 2, localhost, executor driver): java.lang.IllegalStateException: Cannot fetch offset 169 (GroupId: spark-kafka-source-4ad4dd73-c1be-4ffb-8073-3238959305fc-1267656939-executor, TopicPartition: stedi-events-0). 
+Some data may have been lost because they are not available in Kafka any more; either the
+ data was aged out by Kafka or the topic may have been deleted before all the data in the
+ topic was processed. If you don't want your streaming query to fail on such cases, set the
+ source option "failOnDataLoss" to "false".
+    
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$reportDataLoss0(KafkaDataConsumer.scala:642)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$reportDataLoss(KafkaDataConsumer.scala:448)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:269)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:234)
+	at org.apache.spark.util.UninterruptibleThread.runUninterruptibly(UninterruptibleThread.scala:77)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.runUninterruptiblyIfPossible(KafkaDataConsumer.scala:209)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.get(KafkaDataConsumer.scala:234)
+	at org.apache.spark.sql.kafka010.KafkaDataConsumer$class.get(KafkaDataConsumer.scala:64)
+	at org.apache.spark.sql.kafka010.KafkaDataConsumer$CachedKafkaDataConsumer.get(KafkaDataConsumer.scala:500)
+	at org.apache.spark.sql.kafka010.KafkaMicroBatchInputPartitionReader.next(KafkaMicroBatchReader.scala:357)
+	at org.apache.spark.sql.execution.datasources.v2.DataSourceRDD$$anon$1.hasNext(DataSourceRDD.scala:49)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage1.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenExec$$anonfun$13$$anon$1.hasNext(WholeStageCodegenExec.scala:636)
+	at scala.collection.Iterator$$anon$13.hasNext(Iterator.scala:462)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:409)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:409)
+	at org.apache.spark.shuffle.sort.BypassMergeSortShuffleWriter.write(BypassMergeSortShuffleWriter.java:125)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:99)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:55)
+	at org.apache.spark.scheduler.Task.run(Task.scala:123)
+	at org.apache.spark.executor.Executor$TaskRunner$$anonfun$10.apply(Executor.scala:408)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1360)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:414)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.kafka.clients.consumer.OffsetOutOfRangeException: Offsets out of range with no configured reset policy for partitions: {stedi-events-0=169}
+	at org.apache.kafka.clients.consumer.internals.Fetcher.parseCompletedFetch(Fetcher.java:970)
+	at org.apache.kafka.clients.consumer.internals.Fetcher.fetchedRecords(Fetcher.java:490)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.pollForFetches(KafkaConsumer.java:1259)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1187)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1115)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.fetchData(KafkaDataConsumer.scala:470)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$fetchRecord(KafkaDataConsumer.scala:361)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:251)
+	... 25 more
+
+Driver stacktrace:
+	at org.apache.spark.scheduler.DAGScheduler.org$apache$spark$scheduler$DAGScheduler$$failJobAndIndependentStages(DAGScheduler.scala:1891)
+	at org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1879)
+	at org.apache.spark.scheduler.DAGScheduler$$anonfun$abortStage$1.apply(DAGScheduler.scala:1878)
+	at scala.collection.mutable.ResizableArray$class.foreach(ResizableArray.scala:59)
+	at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:48)
+	at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:1878)
+	at org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:927)
+	at org.apache.spark.scheduler.DAGScheduler$$anonfun$handleTaskSetFailed$1.apply(DAGScheduler.scala:927)
+	at scala.Option.foreach(Option.scala:257)
+	at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:927)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:2112)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2061)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2050)
+	at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:49)
+	at org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:738)
+	at org.apache.spark.SparkContext.runJob(SparkContext.scala:2061)
+	at org.apache.spark.sql.execution.datasources.v2.WriteToDataSourceV2Exec.doExecute(WriteToDataSourceV2Exec.scala:64)
+	... 35 more
+Caused by: java.lang.IllegalStateException: Cannot fetch offset 169 (GroupId: spark-kafka-source-4ad4dd73-c1be-4ffb-8073-3238959305fc-1267656939-executor, TopicPartition: stedi-events-0). 
+Some data may have been lost because they are not available in Kafka any more; either the
+ data was aged out by Kafka or the topic may have been deleted before all the data in the
+ topic was processed. If you don't want your streaming query to fail on such cases, set the
+ source option "failOnDataLoss" to "false".
+    
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$reportDataLoss0(KafkaDataConsumer.scala:642)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$reportDataLoss(KafkaDataConsumer.scala:448)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:269)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:234)
+	at org.apache.spark.util.UninterruptibleThread.runUninterruptibly(UninterruptibleThread.scala:77)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.runUninterruptiblyIfPossible(KafkaDataConsumer.scala:209)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.get(KafkaDataConsumer.scala:234)
+	at org.apache.spark.sql.kafka010.KafkaDataConsumer$class.get(KafkaDataConsumer.scala:64)
+	at org.apache.spark.sql.kafka010.KafkaDataConsumer$CachedKafkaDataConsumer.get(KafkaDataConsumer.scala:500)
+	at org.apache.spark.sql.kafka010.KafkaMicroBatchInputPartitionReader.next(KafkaMicroBatchReader.scala:357)
+	at org.apache.spark.sql.execution.datasources.v2.DataSourceRDD$$anon$1.hasNext(DataSourceRDD.scala:49)
+	at org.apache.spark.InterruptibleIterator.hasNext(InterruptibleIterator.scala:37)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIteratorForCodegenStage1.processNext(Unknown Source)
+	at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+	at org.apache.spark.sql.execution.WholeStageCodegenExec$$anonfun$13$$anon$1.hasNext(WholeStageCodegenExec.scala:636)
+	at scala.collection.Iterator$$anon$13.hasNext(Iterator.scala:462)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:409)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:409)
+	at org.apache.spark.shuffle.sort.BypassMergeSortShuffleWriter.write(BypassMergeSortShuffleWriter.java:125)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:99)
+	at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:55)
+	at org.apache.spark.scheduler.Task.run(Task.scala:123)
+	at org.apache.spark.executor.Executor$TaskRunner$$anonfun$10.apply(Executor.scala:408)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:1360)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:414)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.kafka.clients.consumer.OffsetOutOfRangeException: Offsets out of range with no configured reset policy for partitions: {stedi-events-0=169}
+	at org.apache.kafka.clients.consumer.internals.Fetcher.parseCompletedFetch(Fetcher.java:970)
+	at org.apache.kafka.clients.consumer.internals.Fetcher.fetchedRecords(Fetcher.java:490)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.pollForFetches(KafkaConsumer.java:1259)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1187)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1115)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.fetchData(KafkaDataConsumer.scala:470)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer.org$apache$spark$sql$kafka010$InternalKafkaConsumer$$fetchRecord(KafkaDataConsumer.scala:361)
+	at org.apache.spark.sql.kafka010.InternalKafkaConsumer$$anonfun$get$1.apply(KafkaDataConsumer.scala:251)
+	... 25 more
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/workspace/sparkpykafkajoin.py", line 213, in <module>
+    query.awaitTermination()
+  File "/data/spark/python/lib/pyspark.zip/pyspark/sql/streaming.py", line 103, in awaitTermination
+  File "/data/spark/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py", line 1257, in __call__
+  File "/data/spark/python/lib/pyspark.zip/pyspark/sql/utils.py", line 75, in deco
+pyspark.sql.utils.StreamingQueryException: 'Writing job aborted.\n=== Streaming Query ===\nIdentifier: [id = 72a9d1e7-078a-475d-8fe5-4f1177bf949c, runId = 19e51251-fe81-44f9-ba3e-0dff13acbd83]\nCurrent Committed Offsets: {KafkaV2[Subscribe[redis-server]]: {"redis-server":{"0":17}},KafkaV2[Subscribe[stedi-events]]: {"stedi-events":{"0":169}}}\nCurrent Available Offsets: {KafkaV2[Subscribe[redis-server]]: {"redis-server":{"0":17}},KafkaV2[Subscribe[stedi-events]]: {"stedi-events":{"0":194}}}\n\nCurrent State: ACTIVE\nThread State: RUNNABLE\n\nLogical Plan:\nProject [structstojson(named_struct(customer, customer#86, score, score#87, email, email#42, birthYear, birthYear#53), Some(Etc/UTC)) AS value#106]\n+- Join Inner, (customer#86 = email#42)\n   :- Project [customer#86, score#87]\n   :  +- SubqueryAlias `customerrisk`\n   :     +- Project [value#84.customer AS customer#86, value#84.score AS score#87, value#84.riskDate AS riskDate#88]\n   :        +- Project [jsontostructs(StructField(customer,StringType,true), StructField(score,FloatType,true), StructField(riskDate,DateType,true), value#82, Some(Etc/UTC)) AS value#84]\n   :           +- Project [cast(value#69 as string) AS value#82]\n   :              +- StreamingExecutionRelation KafkaV2[Subscribe[stedi-events]], [key#68, value#69, topic#70, partition#71, offset#72L, timestamp#73, timestampType#74]\n   +- Project [email#42, birthYear#53]\n      +- Project [customerName#41, email#42, phone#43, birthDay#44, split(birthDay#44, -)[0] AS birthYear#53]\n         +- Project [customerName#41, email#42, phone#43, birthDay#44]\n            +- Filter (isnotnull(email#42) && isnotnull(birthDay#44))\n               +- SubqueryAlias `customerrecords`\n                  +- Project [customer#38.customerName AS customerName#41, customer#38.email AS email#42, customer#38.phone AS phone#43, customer#38.birthDay AS birthDay#44]\n                     +- Project [encodedCustomer#33, jsontostructs(StructField(customerName,StringType,true), StructField(email,StringType,true), StructField(phone,StringType,true), StructField(birthDay,StringType,true), customer#35, Some(Etc/UTC)) AS customer#38]\n                        +- Project [encodedCustomer#33, cast(unbase64(encodedCustomer#33) as string) AS customer#35]\n                           +- Project [zSetEntries#28[0].element AS encodedCustomer#33]\n                              +- SubqueryAlias `redissortedset`\n                                 +- Project [value#23.existType AS existType#25, value#23.Ch AS Ch#26, value#23.Incr AS Incr#27, value#23.zSetEntries AS zSetEntries#28]\n                                    +- Project [jsontostructs(StructField(key,StringType,true), StructField(existType,StringType,true), StructField(Ch,BooleanType,true), StructField(Incr,BooleanType,true), StructField(zSetEntries,ArrayType(StructType(StructField(element,StringType,true), StructField(Score,StringType,true)),true),true), value#21, Some(Etc/UTC)) AS value#23]\n                                       +- Project [cast(value#8 as string) AS value#21]\n                                          +- StreamingExecutionRelation KafkaV2[Subscribe[redis-server]], [key#7, value#8, topic#9, partition#10, offset#11L, timestamp#12, timestampType#13]\n'

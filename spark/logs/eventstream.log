@@ -1,0 +1,29 @@
+-------------------------------------------
+Batch: 0
+-------------------------------------------
++--------------------+-----+
+|            customer|score|
++--------------------+-----+
+| John.Ahmed@test.com| 33.0|
+|Jerry.Harris@test...|-12.5|
+| Sean.Clark@test.com|-13.5|
+|Senthil.Sanchez@t...|  4.5|
+|Craig.Habschied@t...| -3.5|
+|Bobby.Clark@test.com| -3.0|
+|Senthil.Spencer@t...| -3.0|
+|Frank.Doshi@test.com| -4.5|
+|Ashley.Abram@test...| -5.5|
+|Suresh.Ahmed@test...| -2.5|
+|Trevor.Clark@test...| -4.0|
+| Sean.Doshi@test.com| -3.5|
+|   Craig.Wu@test.com| -3.0|
+|Craig.Phillips@te...| -4.5|
+|Suresh.Clark@test...| -2.5|
+|Danny.Sanchez@tes...| 25.0|
+|John.Hansen@test.com| 12.0|
+|Ashley.Doshi@test...| -8.0|
+|Trevor.Harris@tes...| -3.5|
+|Santosh.Anandh@te...|  1.5|
++--------------------+-----+
+only showing top 20 rows
+
