@@ -4,4 +4,3 @@
 /home/workspace/kafka/start_kafka_rest.sh 2>&1 &
 /home/workspace/kafka/start_kafka_connect.sh 2>&1 &
 java -Dconfig=/home/workspace/stedi-application/application.conf -jar /data/stedi-application/StepTimerWebsocket-1.0-SNAPSHOT.jar > /home/workspace/stedi-application/stedi.log 2>&1 &
-
