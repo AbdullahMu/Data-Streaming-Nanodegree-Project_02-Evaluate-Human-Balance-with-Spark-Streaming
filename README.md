@@ -16,7 +16,7 @@ Your product manager has requested a graph that shows fall risk (will they fall 
 
 STEDI Risk Graph
 ### STEDI Wireframe
-![STEDI application Wireframe](https://video.udacity-data.com/topher/2020/September/Screenshot 2021-06-03 152704.png)
+![STEDI application Wireframe]("images/Screenshot 2021-06-03 152704.png")
 
 ### The Data
 
