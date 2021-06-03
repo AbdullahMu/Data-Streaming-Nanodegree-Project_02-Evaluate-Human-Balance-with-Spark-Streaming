@@ -45,8 +45,7 @@ kafkaEventsDF.withColumn("value", from_json("value", kafkaEventschema))\
              .createOrReplaceTempView("CustomerRisk")
 
 # execute a sql statement against a temporary view, selecting the customer and the score from the temporary view, creating a dataframe called customerRiskStreamingDF
-sql_statement = "SELECT customer, score FROM CustomerRisk"
-customerRiskStreamingDF = spark.sql(sql_statement)
+customerRiskStreamingDF = spark.sql("SELECT customer, score FROM CustomerRisk")
 
 # sink the customerRiskStreamingDF dataframe to the console in append mode
 # 
