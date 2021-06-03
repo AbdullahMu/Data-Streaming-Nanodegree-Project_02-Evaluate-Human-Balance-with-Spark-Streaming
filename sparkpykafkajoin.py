@@ -194,7 +194,7 @@ stediScoreStreamingDF = customerRiskStreamingDF.join(emailAndBirthYearStreamingD
 # +--------------------+-----+--------------------+---------+
 #
 # In this JSON Format {"customer":"Santosh.Fibonnaci@test.com","score":"28.5","email":"Santosh.Fibonnaci@test.com","birthYear":"1963"} 
-query = stediScoreStreamingDF.selectExpr("to_json(struct(*)) AS value").writeStream \
+query = stediScoreStreamingDF.selectExpr("TO_JSON(struct(*)) AS value").writeStream \
         .outputMode('append') \
         .format("kafka") \
         .option("kafka.bootstrap.servers", "localhost:9092") \
@@ -203,7 +203,7 @@ query = stediScoreStreamingDF.selectExpr("to_json(struct(*)) AS value").writeStr
         .option("topic", "your_topic_name") \
         .start();
 
-query_console = stediScoreStreamingDF.selectExpr("to_json(struct(*)) AS value").writeStream \
+query_console = stediScoreStreamingDF.selectExpr("TO_JSON(struct(*)) AS value").writeStream \
         .outputMode('append') \
         .format('console') \
         .option('truncate' , False) \
